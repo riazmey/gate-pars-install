@@ -81,9 +81,10 @@ function systemInstallService() {
 
 function systemInstallUser() {
 
-    findedUser=$(grep "${SERVICE_USER}" /etc/passwd)
+    resultFind=$(getent passwd | grep "${SERVICE_USER}")
 
-    if [[ -n "${findedUser}" ]]; then
+    if [[ -n "${resultFind}" ]]; then
+        echo "useradd -M -N -b -r ${SERVICE_DIR} -s /usr/sbin/nologin -u ${SERVICE_USER}"
         echo "$ROOT_PASS" | sudo -S useradd -M -N -b -r "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
     else
         echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}"

@@ -81,13 +81,12 @@ function systemInstallService() {
 
 function systemInstallUser() {
 
-    resultFind=$(getent passwd | grep "${SERVICE_USER}")
+    resultFind=$(grep -q "^${SERVICE_USER}:" /etc/passwd && echo "${TRUE}" || echo "${FALSE}")
 
-    if [[ -n "${resultFind}" ]]; then
-        echo "useradd -M -N -b -r ${SERVICE_DIR} -s /usr/sbin/nologin -u ${SERVICE_USER}"
-        echo "$ROOT_PASS" | sudo -S useradd -M -N -b -r "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
-    else
+    if [ "${resultFind}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}"
         echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}"
+    else
+        echo "$ROOT_PASS" | sudo -S useradd -M -N -b -r "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
     fi
 }

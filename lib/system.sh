@@ -87,6 +87,6 @@ function systemInstallUser() {
         echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}"
         echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}"
     else
-        echo "$ROOT_PASS" | sudo -S useradd -M -N -b -r "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
+        echo "$ROOT_PASS" | sudo -S useradd -M -N -r -b "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
     fi
 }

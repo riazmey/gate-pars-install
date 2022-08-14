@@ -15,7 +15,7 @@ export INSTALL_DIR="${installDir}"
 
 #################################### SERVICE GATE_PARS ####################################
 export SERVICE_IP_ADDRESS="${ipAdress}"
-export SERVICE_NAME="gate-pars"
+export SERVICE_NAME="gate_pars"
 export SERVICE_USER="${SERVICE_NAME}"
 export SERVICE_GROUP="www-data"
 export SERVICE_DIR="/srv/${SERVICE_NAME}"

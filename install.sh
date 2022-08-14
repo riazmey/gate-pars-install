@@ -26,8 +26,6 @@ if [ "$(requestPasswordSU)" == "${FALSE}" ]; then
 fi
 
 echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
-echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
-echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null
 
 systemUpdatePackages
 systemInstallPackages
@@ -37,5 +35,8 @@ nginxConfigUpdate
 nginxSitesUpdate
 #serviceMakeTreeDir
 #serviceCreateEnv
+
+echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
+echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null
 
 echo 'Done'

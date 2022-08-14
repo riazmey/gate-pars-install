@@ -25,14 +25,12 @@ if [ "$(requestPasswordSU)" == "${FALSE}" ]; then
     exit 0
 fi
 
-#systemUpdatePackages
-#systemInstallPackages
+systemUpdatePackages
+systemInstallPackages
 systemInstallService
-#nginxConfig
-#nginxConfigSites
-#serviceCreatUnit
+nginxConfigUpdate
+nginxSitesUpdate
 #serviceMakeTreeDir
 #serviceCreateEnv
-#systemInstallService
 
 echo 'Done'

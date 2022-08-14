@@ -173,7 +173,7 @@ function nginxSitesUpdate() {
 
     local fileSiteAvailableService="${NGINX_CONF_DIR_SITES_AVAILABLE}/${SERVICE_NAME}"
     local fileSiteEnabledService="${NGINX_CONF_DIR_SITES_ENABLED}/${SERVICE_NAME}"
-    local fileTmpSiteAvailableService="/tmp/nginx-sites-available-${SERVICE_NAME}"
+    local fileTemplate="${INSTALL_DIR}/etc/nginx-site"
 
     if [ -f "${fileSiteAvailableService}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableService}"
@@ -183,35 +183,11 @@ function nginxSitesUpdate() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteEnabledService}"
     fi
 
-    if [ -f "${fileTmpSiteAvailableService}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmpSiteAvailableService}"
-    fi
+    while read -r string; do
+        newString=$(eval echo "$string")
+        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileSiteAvailableService}"
+    done < "${fileTemplate}"
 
-    ipAdresses=$(ip a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | awk '{print $2}' | sed 's/^\(.*\)\/.*$/\1/')
-    ipAdress=$(echo "${ipAdresses}" | awk '{ print $1}')
-
-    echo "
-upstream gate_pars_upstream {
-	server unix:/tmp/${SERVICE_NAME}.sock;
-}
-
-server {
-	listen 80;
-	server_tokens off;
-	server_name ${ipAdress};
-	fastcgi_read_timeout 900s;
-
-	location / {
-		include uwsgi_params;
-		uwsgi_pass unix:${SERVICE_DIR}/${SERVICE_NAME}.sock;
-	}
-    	
-	location /static {
-		root ${SERVICE_DIR};
-	}
-}" > "${fileTmpSiteAvailableService}"
-
-    echo "$ROOT_PASS" | sudo -S bash -c "cat ${fileTmpSiteAvailableService} | tee ${fileSiteAvailableService} > /dev/null"
     echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${NGINX_CONF_DIR_SITES_ENABLED}"
 
 }

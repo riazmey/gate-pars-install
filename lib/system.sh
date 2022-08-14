@@ -75,9 +75,9 @@ function systemInstallService() {
         echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileService}"
     done < "${fileTemplate}"
 
-    #echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    #echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"
-    #echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}"
-    #echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}"
+    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
+    echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"
+    echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}"
+    echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}"
 
 }

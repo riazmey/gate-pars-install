@@ -70,12 +70,7 @@ function systemInstallService() {
 
     echo "$ROOT_PASS" | sudo -S touch "${fileService}"
 
-    while read -r string; do
-
-        newString=$($string)
-        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} | tee ${fileService} > /dev/null"
-
-    done < "${fileTemplate}"
+    envsubst < "${fileTemplate}" > "${fileService}"
 
     #echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
     #echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"

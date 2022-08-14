@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 ipAdresses=$(ip a | grep inet | grep -v inet6 | grep -v '127.0.0.1' | awk '{print $2}' | sed 's/^\(.*\)\/.*$/\1/')
 ipAdress=$(echo "${ipAdresses}" | awk '{ print $1}')
 symbolTab=$(echo -e "\t")

@@ -75,9 +75,18 @@ function systemInstallService() {
         echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileService}"
     done < "${fileTemplate}"
 
-    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"
-    echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}"
-    echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}"
+    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload &> /dev/null
 
+}
+
+function systemInstallUser() {
+
+    findedUser=$(grep "${SERVICE_USER}" /etc/passwd)
+
+    if [[ -n "${findedUser}" ]]; then
+        echo "$ROOT_PASS" | sudo -S useradd -M -N -b -r "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
+    else
+        echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}"
+        echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}"
+    fi
 }

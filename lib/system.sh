@@ -72,7 +72,7 @@ function systemInstallService() {
 
     while read -r string; do
         newString=$(eval echo "$string")
-        echo "$ROOT_PASS" | sudo -S bash -c 'echo "$newString" | tee ${fileService} > /dev/null'
+        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileService}"
     done < "${fileTemplate}"
 
     #echo "$ROOT_PASS" | sudo -S systemctl daemon-reload

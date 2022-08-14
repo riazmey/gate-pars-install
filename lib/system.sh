@@ -4,7 +4,7 @@ set -eu
 
 ####################################### IMPORT FILES ######################################
 # shellcheck source=/dev/null
-source general.sh
+source "${INSTALL_DIR}/lib/general.sh"
 
 ########################################## MAIN ###########################################
 function systemUpdatePackages() {

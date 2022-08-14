@@ -62,35 +62,24 @@ function systemInstallPackages() {
 function systemInstallService() {
 
     local fileService="/etc/systemd/system/${SERVICE_NAME}.service"
-    local fileTmpService="/tmp/${SERVICE_NAME}.service"
+    local fileTemplate="${INSTALL_DIR}/etc/unit.service"
 
     if [ -f "${fileService}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileService}"
     fi
 
-    if [ -f "${fileTmpService}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmpService}"
-    fi
+    echo "$ROOT_PASS" | sudo -S touch "${fileService}"
 
-    echo "
-[Unit]
-Description=uWSGI instance to serve ${SERVICE_NAME} project
-After=network.target
+    while read -r string; do
 
-[Service]
-User=${SERVICE_USER}
-Group=www-data
-WorkingDirectory=${SERVICE_DIR}
-ExecStart=${SERVICE_DIR}/venv/bin/uwsgi --ini ${SERVICE_NAME}.ini
+        newString=$($string)
+        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} | tee ${fileService} > /dev/null"
 
-[Install]
-WantedBy=multi-user.target" > "${fileTmpService}"
+    done < "${fileTemplate}"
 
-    echo "$ROOT_PASS" | sudo -S bash -c "cat ${fileTmpService} | tee ${fileService} > /dev/null"
-
-    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"
-    echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}"
-    echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}"
+    #echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
+    #echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}"
+    #echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}"
+    #echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}"
 
 }

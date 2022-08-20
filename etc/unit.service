@@ -6,7 +6,7 @@ After=network.target
 User=${SERVICE_USER}
 Group=${SERVICE_GROUP}
 WorkingDirectory=${SERVICE_DIR}
-ExecStart=${SERVICE_DIR}/venv/bin/uwsgi --ini ${SERVICE_NAME}.ini
+ExecStart=${SERVICE_DIR}/venv/bin/uwsgi --ini app.ini
 
 [Install]
 WantedBy=multi-user.target

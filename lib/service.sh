@@ -3,7 +3,27 @@
 set -eu
 
 ########################################## MAIN ###########################################
-function serviceMakeTreeDir() {
+function serviceCreateAppIni() {
+
+    local fileIni="${SERVICE_DIR}/app.ini"
+    local fileIniTemplate="${INSTALL_DIR}/etc/app.ini"
+
+    if [ -f "${fileIni}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${fileIni}"
+    fi
+
+    echo "$ROOT_PASS" | sudo -S touch "${fileIni}"
+
+    while read -r string; do
+        newString=$(eval echo "$string")
+        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileIni}"
+    done < "${fileIniTemplate}"
+
+    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload &> /dev/null
+
+}
+
+function serviceCreateTreeDir() {
 
     for currentDir in ${SERVICE_DIR_TREE}; do
 

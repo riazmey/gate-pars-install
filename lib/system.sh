@@ -61,8 +61,10 @@ function systemInstallPackages() {
 
 function systemInstallService() {
 
+    #systemctl list-units snapd.service | grep snapd.service | awk '{print $1}'
+
     local fileService="/etc/systemd/system/${SERVICE_NAME}.service"
-    local fileTemplate="${INSTALL_DIR}/etc/unit.service"
+    local fileServiceTemplate="${INSTALL_DIR}/etc/unit.service"
 
     if [ -f "${fileService}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileService}"
@@ -73,7 +75,7 @@ function systemInstallService() {
     while read -r string; do
         newString=$(eval echo "$string")
         echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileService}"
-    done < "${fileTemplate}"
+    done < "${fileServiceTemplate}"
 
     echo "$ROOT_PASS" | sudo -S systemctl daemon-reload &> /dev/null
 
@@ -82,11 +84,13 @@ function systemInstallService() {
 function systemInstallUser() {
 
     resultFind=$(grep -q "^${SERVICE_USER}:" /etc/passwd && echo "${TRUE}" || echo "${FALSE}")
+    dirService=$(dirname "${SERVICE_DIR}")
 
     if [ "${resultFind}" == "${TRUE}" ]; then
-        echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}"
-        echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}"
+        echo "$ROOT_PASS" | sudo -S chsh -s "/usr/sbin/nologin" "${SERVICE_USER}" &> /dev/null
+        echo "$ROOT_PASS" | sudo -S usermod --home "${dirService}" "${SERVICE_USER}" &> /dev/null
     else
-        echo "$ROOT_PASS" | sudo -S useradd -M -N -r -b "${SERVICE_DIR}" -s "/usr/sbin/nologin" -u "${SERVICE_USER}"
+        echo "$ROOT_PASS" | sudo -S useradd -M -N -r -b "${dirService}" -s "/usr/sbin/nologin" "${SERVICE_USER}" &> /dev/null
     fi
+
 }

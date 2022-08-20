@@ -22,9 +22,7 @@ export SERVICE_DIR="/srv/${SERVICE_NAME}"
 export SERVICE_DIR_TREE=(
     "${SERVICE_DIR}"
     "${SERVICE_DIR}/bin"
-    "${SERVICE_DIR}/lib"
-    "${SERVICE_DIR}/lib/common"
-    "${SERVICE_DIR}/lib/sites"
+    "${SERVICE_DIR}/run"
     "${SERVICE_DIR}/data"
     "${SERVICE_DIR}/opt" )
 

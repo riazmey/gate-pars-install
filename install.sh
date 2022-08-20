@@ -33,8 +33,9 @@ systemInstallUser
 systemInstallService
 nginxConfigUpdate
 nginxSitesUpdate
-#serviceMakeTreeDir
-#serviceCreateEnv
+serviceCreateAppIni
+serviceCreateTreeDir
+serviceCreateEnv
 
 echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
 echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null

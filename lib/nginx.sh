@@ -3,7 +3,7 @@
 set -eu
 
 ######################################## VARIABLES ########################################
-dirTmp="${TEMPORARY_DIR}/nginx"
+dirTmpNginx="${TEMPORARY_DIR}/nginx"
 
 ########################################## MAIN ###########################################
 function nginxConfigUpdate() {
@@ -11,8 +11,8 @@ function nginxConfigUpdate() {
     echo "nginxConfigUpdate"
 
     local confFile="/etc/nginx/nginx.conf"
-    local confFileTmp="${dirTmp}/nginx.conf"
-    local confFileTemplate="${dirTmp}/nginx_template.conf"
+    local confFileTmp="${dirTmpNginx}/nginx.conf"
+    local confFileTemplate="${dirTmpNginx}/nginx_template.conf"
 
     function readConfig() {
 
@@ -193,7 +193,7 @@ function nginxSitesUpdate() {
     local fileSiteAvailableService="${dirSitesAvailable}/${SERVICE_NAME}"
     local fileSiteEnabledService="${dirSitesEnabled}/${SERVICE_NAME}"
     local fileTemplate="${INSTALL_DIR}/etc/nginx-site"
-    local fileTmp="${dirTmp}/site_available"
+    local fileTmp="${dirTmpNginx}/site_available"
 
     if [ -f "${fileTmp}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmp}"
@@ -280,6 +280,6 @@ function nginxSitesActivate() {
 
 }
 
-if [ ! -d "${dirTmp}" ]; then
-    mkdir -p "${dirTmp}"
+if [ ! -d "${dirTmpNginx}" ]; then
+    mkdir -p "${dirTmpNginx}"
 fi

@@ -87,12 +87,14 @@ function systemInstallUser() {
     echo "systemInstallUser"
 
     resultFind=$(grep -q "^${SERVICE_USER}:" /etc/passwd && echo "${TRUE}" || echo "${FALSE}")
+    dirService=$(dirname "${SERVICE_DIR}")
 
     if [ "${resultFind}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S chsh -s "/bin/false" "${SERVICE_USER}" &> /dev/null
         echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}" &> /dev/null
+        echo "$ROOT_PASS" | sudo -S usermod -a -G "${SERVICE_GROUP}" "${SERVICE_USER}"
     else
-        echo "$ROOT_PASS" | sudo -S useradd -U "${SERVICE_GROUP}" -M -N -r -b "${SERVICE_DIR}" -s "/bin/false" "${SERVICE_USER}" &> /dev/null
+        echo "$ROOT_PASS" | sudo -S useradd -r -M -N -g "${SERVICE_GROUP}" -b "${dirService}" -s "/bin/false" "${SERVICE_USER}"
     fi
 
     echo "$ROOT_PASS" | sudo -S usermod -L "${SERVICE_USER}"

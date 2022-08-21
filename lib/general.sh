@@ -93,7 +93,7 @@ function installPackage() {
 #   $1 - Имя пакета
 # Возвращаемое значение:
 #   Булево
-function packageIsInstalled () {
+function packageIsInstalled() {
 
   resultFind=$(dpkg -l | awk '{print $2}' | grep "$1" | sed 's/\:[^:]*$//' | grep ^"$1"$)
 
@@ -125,15 +125,10 @@ function installPython3Package() {
 #   $1 - Имя пакета
 # Возвращаемое значение:
 #   Булево
-function packagePython3IsInstalled () {
+function packagePython3IsInstalled() {
 
-  resultFind=$(pip3 list | grep -F "$1" | awk '{print $1}')
-
-  if [ "${resultFind}" == "$1" ]; then
-    echo "${TRUE}"
-  else
-    echo "${FALSE}"
-  fi
+  result=$(pip3 list | grep -F "$1" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+  echo "${result}"
 
 }
 
@@ -142,7 +137,7 @@ function packagePython3IsInstalled () {
 #   отсутствует
 # Возвращаемое значение:
 #   имя дистрибутива
-function nameOS () {
+function nameOS() {
 
   local distribs="ubuntu fedora centos"
 

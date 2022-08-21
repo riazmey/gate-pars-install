@@ -1,20 +1,15 @@
 #!/bin/bash
 
-####################################### IMPORT FILES ######################################
-# shellcheck source=/dev/null
-source "${INSTALL_DIR}/etc/configuration.sh"
-# shellcheck source=/dev/null
-source "${INSTALL_DIR}/lib/general.sh"
-
 ######################################## VARIABLES ########################################
-ServiceDirBin="${SERVICE_DIR}/bin"
+namePackageBrowser="google-chrome-stable"
+serviceDirBin="${SERVICE_DIR}/bin"
+nameDriver="chromedriver"
 DirTmp="/tmp"
 
 ########################################### MAIN ##########################################
 
-function installChromeBrowser() {
+function chromeBrowserInstall() {
 
-    local namePackageBrowser="google-chrome-stable"
     resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${DirTmp}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
@@ -22,12 +17,10 @@ function installChromeBrowser() {
 
 }
 
-function installChromeDriver() {
+function chromeDriverInstall() {
 
-    local nameDriver="chromedriver"
-
-    if [ ! -d "${ServiceDirBin}" ]; then
-        echo "$ROOT_PASS" | sudo -S mkdir -p "${ServiceDirBin}"
+    if [ ! -d "${serviceDirBin}" ]; then
+        echo "$ROOT_PASS" | sudo -S mkdir -p "${serviceDirBin}"
     fi
 
     chrome_version=$(google-chrome --version | awk '{print $3}')
@@ -43,18 +36,21 @@ function installChromeDriver() {
         unzip "${DirTmp}/${nameDriver}.zip" -d "${DirTmp}"
 
         if [ -f "${DirTmp}/${nameDriver}" ]; then
-            echo "$ROOT_PASS" | sudo -S rm -f "${ServiceDirBin}/${nameDriver}"
-            echo "$ROOT_PASS" | sudo -S mv "${DirTmp}/${nameDriver}" "${ServiceDirBin}/${nameDriver}" 
-
-            echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${ServiceDirBin}"
-            echo "$ROOT_PASS" | sudo -S chmod -R 644 "${ServiceDirBin}"
-            echo "$ROOT_PASS" | sudo -S chmod +x "${ServiceDirBin}/${nameDriver}"
-
+            echo "$ROOT_PASS" | sudo -S rm -f "${serviceDirBin}/${nameDriver}"
+            echo "$ROOT_PASS" | sudo -S mv "${DirTmp}/${nameDriver}" "${serviceDirBin}/${nameDriver}" 
         fi
 
     fi
 
 }
 
-installChromeBrowser
-installChromeDriver
+function chromeDriverExcecutable() {
+
+    fileChromeDriver="${serviceDirBin}/${nameDriver}"
+
+    if [ -f "${fileChromeDriver}" ]; then
+        echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${fileChromeDriver}"
+        echo "$ROOT_PASS" | sudo -S chmod +x "${fileChromeDriver}"
+    fi
+
+}

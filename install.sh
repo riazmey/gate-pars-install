@@ -14,6 +14,8 @@ source "${INSTALL_DIR}/lib/system.sh"
 source "${INSTALL_DIR}/lib/nginx.sh"
 # shellcheck source=/dev/null
 source "${INSTALL_DIR}/lib/service.sh"
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/lib/chrome.sh"
 
 ########################################## MAIN ###########################################
 if [ "${USER}" == "root" ]; then
@@ -38,14 +40,13 @@ nginxSitesActivate
 
 serviceCreateTreeDir
 serviceCreateAppIni
-
-echo "$ROOT_PASS" | sudo -S chown -R "${USER}:${USER}" "${SERVICE_DIR}"
-
 serviceCreateEnv
 serviceUpdateModules
-serviceInstallChrome
 
-echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR}"
+chromeBrowserInstall
+chromeDriverInstall
+
+serviceEnable
 
 echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
 echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null

@@ -2,7 +2,8 @@
 
 set -eu
 
-dirTmp="/${TEMPORARY_DIR}/nginx"
+######################################## VARIABLES ########################################
+dirTmp="${TEMPORARY_DIR}/nginx"
 
 ########################################## MAIN ###########################################
 function nginxConfigUpdate() {
@@ -10,8 +11,8 @@ function nginxConfigUpdate() {
     echo "nginxConfigUpdate"
 
     local confFile="/etc/nginx/nginx.conf"
-    local confFileTmp="/${dirTmp}/nginx.conf"
-    local confFileTemplate="/${dirTmp}/nginx_template.conf"
+    local confFileTmp="${dirTmp}/nginx.conf"
+    local confFileTemplate="${dirTmp}/nginx_template.conf"
 
     function readConfig() {
 
@@ -192,7 +193,7 @@ function nginxSitesUpdate() {
     local fileSiteAvailableService="${dirSitesAvailable}/${SERVICE_NAME}"
     local fileSiteEnabledService="${dirSitesEnabled}/${SERVICE_NAME}"
     local fileTemplate="${INSTALL_DIR}/etc/nginx-site"
-    local fileTmp="/${dirTmp}/site_available"
+    local fileTmp="${dirTmp}/site_available"
 
     if [ -f "${fileTmp}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmp}"
@@ -278,3 +279,9 @@ function nginxSitesActivate() {
     echo "$ROOT_PASS" | sudo -S systemctl start nginx
 
 }
+
+if [ -d "${dirTmp}" ]; then
+    echo "$ROOT_PASS" | sudo -S rm -rf "${dirTmp}"
+fi
+
+mkdir -p "${dirTmp}"

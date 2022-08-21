@@ -77,3 +77,9 @@ function serviceUpdateModules() {
     fi
     
 }
+
+function serviceInstallChrome() {
+
+    bash "${INSTALL_DIR}/lib/browser_drivers.sh"
+    
+}

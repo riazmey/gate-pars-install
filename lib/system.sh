@@ -44,15 +44,6 @@ function systemInstallPackages() {
 
     done
 
-    chromeInstalled=$(packageIsInstalled "google-chrome-stable")
-
-    if [ "${chromeInstalled}" == "${FALSE}" ]; then
-        cd "/tmp" || exit
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
-        echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends google-chrome-stable_current_amd64.deb &> /dev/null
-        modify="${TRUE}"
-    fi
-
     if [ "${modify}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S apt-get -y install -f &> /dev/null
     fi

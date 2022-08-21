@@ -1,8 +1,10 @@
 #!/bin/bash
 
 ####################################### IMPORT FILES ######################################
-source functions.sh
-source install_service.cfg
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/etc/configuration.sh"
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/lib/general.sh"
 
 ######################################## VARIABLES ########################################
 SERVICE_DIR_BIN="${SERVICE_DIR}/bin"
@@ -10,27 +12,49 @@ DIR_TMP="/tmp"
 
 ########################################### MAIN ##########################################
 
-if [ ! -d "${SERVICE_DIR_BIN}" ]; then
-    mkdir -p "${SERVICE_DIR_BIN}"
-fi
+function installChromeBrowser() {
 
-chrome_version=$(google-chrome --version | awk '{print $3}')
+    local namePackageBrowser="google-chrome-stable"
+    resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${DIR_TMP}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
-rm -f "${DIR_TMP}/chromedriver"
-rm -f "${DIR_TMP}/chromedriver_linux64.zip"
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
+    echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${namePackageBrowser}.deb" &> /dev/null
 
-cd "${DIR_TMP}" || exit
-wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip"
+}
 
-if [ -f "${DIR_TMP}/chromedriver_linux64.zip" ]; then
+function installChromeDriver() {
 
-    installPackage "unzip"
-    unzip chromedriver_linux64.zip
+    local nameDriver="chromedriver"
 
-    if [ -f "${DIR_TMP}/chromedriver" ]; then
-        rm -f "${SERVICE_DIR_BIN}/chromedriver"
-        mv "${DIR_TMP}/chromedriver" "${DIRSERVICE_DIR_BIN_BIN}/chromedriver" 
-        chmod +x "${SERVICE_DIR_BIN}/chromedriver"
+    if [ ! -d "${SERVICE_DIR_BIN}" ]; then
+        echo "$ROOT_PASS" | sudo -S mkdir -p "${SERVICE_DIR_BIN}"
     fi
 
-fi
+    chrome_version=$(google-chrome --version | awk '{print $3}')
+
+    echo "$ROOT_PASS" | sudo -S rm -f "${DIR_TMP}/${nameDriver}"
+    echo "$ROOT_PASS" | sudo -S rm -f "${DIR_TMP}/${nameDriver}.zip"
+
+    resultDownLoad=$(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" -O "${DIR_TMP}/${nameDriver}.zip" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+
+    if [ "${resultDownLoad}" == "${TRUE}" ]; then
+
+        installPackage "unzip"
+        unzip "${DIR_TMP}/${nameDriver}.zip" -d "${DIR_TMP}"
+
+        if [ -f "${DIR_TMP}/${nameDriver}" ]; then
+            echo "$ROOT_PASS" | sudo -S rm -f "${SERVICE_DIR_BIN}/${nameDriver}"
+            echo "$ROOT_PASS" | sudo -S mv "${DIR_TMP}/${nameDriver}" "${SERVICE_DIR_BIN}/${nameDriver}" 
+
+            echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR_BIN}"
+            echo "$ROOT_PASS" | sudo -S chmod -R 644 "${SERVICE_DIR_BIN}"
+            echo "$ROOT_PASS" | sudo -S chmod +x "${SERVICE_DIR_BIN}/${nameDriver}"
+
+        fi
+
+    fi
+
+}
+
+installChromeBrowser
+installChromeDriver

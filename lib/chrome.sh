@@ -30,7 +30,7 @@ function chromeBrowserInstall() {
 
     fi
 
-    echo "$ROOT_PASS" | sudo -S apt-get install -y -f 1> /dev/null
+    echo "$ROOT_PASS" | sudo -S bash -c "apt-get install -y -f >> /tmp/apt.log"
 
 }
 

@@ -23,6 +23,7 @@ export SERVICE_GIT_REPO="https://github.com/riazmey/gate-pars-modules.git"
 export SERVICE_DIR_TREE=(
     "${SERVICE_DIR}"
     "${SERVICE_DIR}/bin"
+	"${SERVICE_DIR}/etc"
     "${SERVICE_DIR}/run"
     "${SERVICE_DIR}/data"
     "${SERVICE_DIR}/opt" )

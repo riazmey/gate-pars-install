@@ -36,8 +36,8 @@ nginxConfigUpdate
 nginxSitesUpdate
 nginxSitesActivate
 
-serviceCreateAppIni
 serviceCreateTreeDir
+serviceCreateAppIni
 serviceCreateEnv
 serviceUpdateModules
 serviceInstallChrome

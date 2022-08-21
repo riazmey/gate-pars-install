@@ -92,7 +92,9 @@ function systemInstallUser() {
         echo "$ROOT_PASS" | sudo -S chsh -s "/bin/false" "${SERVICE_USER}" &> /dev/null
         echo "$ROOT_PASS" | sudo -S usermod --home "${SERVICE_DIR}" "${SERVICE_USER}" &> /dev/null
     else
-        echo "$ROOT_PASS" | sudo -S useradd -M -N -r -b "${SERVICE_DIR}" -s "/bin/false" "${SERVICE_USER}" &> /dev/null
+        echo "$ROOT_PASS" | sudo -S useradd -U "${SERVICE_GROUP}" -M -N -r -b "${SERVICE_DIR}" -s "/bin/false" "${SERVICE_USER}" &> /dev/null
     fi
+
+    echo "$ROOT_PASS" | sudo -S usermod -L "${SERVICE_USER}"
 
 }

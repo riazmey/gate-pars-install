@@ -111,7 +111,7 @@ function serviceStop() {
 
     echo "serviceStop"
 
-    serviceActive=$(serviceActive "${SERVICE_NAME}")
+    serviceActive=$(serviceIsActive "${SERVICE_NAME}")
 
     if [ "${serviceActive}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null

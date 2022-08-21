@@ -14,8 +14,11 @@ function chromeBrowserInstall() {
 
     resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
-    echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${namePackageBrowser}.deb" &> /dev/null
+    if [ "${resultDownLoad}" == "${TRUE}" ]; then
+        echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
+    fi
+
+    echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
 
 }
 

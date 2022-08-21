@@ -5,7 +5,11 @@ set -eu
 ########################################## MAIN ###########################################
 function nginxConfigUpdate() {
 
+    echo "nginxConfigUpdate"
+
     function readConfig() {
+
+        echo "  nginxConfigUpdate.readConfig"
 
         local currentAreaHttp="${FALSE}"
         local excludesStringsInAreaHttp="# { }"
@@ -50,6 +54,8 @@ function nginxConfigUpdate() {
 
     function setParametrs() {
 
+        echo "  nginxConfigUpdate.setParametrs"
+
         function setParametr() {
 
             if [ "$1" == "include" ]; then
@@ -91,6 +97,8 @@ function nginxConfigUpdate() {
     }
 
     function writeConfigTemp() {
+
+        echo "  nginxConfigUpdate.writeConfigTemp"
 
         local level=0
 
@@ -137,6 +145,8 @@ function nginxConfigUpdate() {
 
     function writeConfig() {
 
+        echo "  nginxConfigUpdate.writeConfig"
+
         local nginxConfigFileOld="${NGINX_CONF_FILE}.old"
 
         if [ -f "${nginxConfigFileOld}" ]; then
@@ -164,13 +174,11 @@ function nginxConfigUpdate() {
     writeConfigTemp
     writeConfig
 
-    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    echo "$ROOT_PASS" | sudo -S systemctl enable nginx
-    echo "$ROOT_PASS" | sudo -S systemctl start nginx
-
 }
 
 function nginxSitesUpdate() {
+
+    echo "nginxSitesUpdate"
 
     local fileSiteAvailableService="${NGINX_CONF_DIR_SITES_AVAILABLE}/${SERVICE_NAME}"
     local fileSiteEnabledService="${NGINX_CONF_DIR_SITES_ENABLED}/${SERVICE_NAME}"
@@ -187,11 +195,10 @@ function nginxSitesUpdate() {
     local level=0
     while read -r string; do
         
-        stringWhithParametrs=$(eval echo "$string")
         local resultString=""
-        local endSymbol=""
-
         local retreats=""
+
+        stringWhithParametrs=$(eval echo "$string")
 
         if [[ $string == *"{"* ]]; then
             
@@ -209,16 +216,23 @@ function nginxSitesUpdate() {
                 retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
             done
 
-        else
-            endSymbol=";"
         fi
 
-        resultString="${retreats}${stringWhithParametrs}${endSymbol}"
+        resultString="${retreats}${stringWhithParametrs}"
+        echo "${resultString}"
 
         echo "$ROOT_PASS" | sudo -S bash -c "echo ${resultString} >> ${fileSiteAvailableService}"
 
     done < "${fileTemplate}"
 
     echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${NGINX_CONF_DIR_SITES_ENABLED}"
+
+}
+
+function nginxSitesActivate() {
+
+    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
+    echo "$ROOT_PASS" | sudo -S systemctl enable nginx
+    echo "$ROOT_PASS" | sudo -S systemctl start nginx
 
 }

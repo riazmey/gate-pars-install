@@ -29,8 +29,11 @@ systemUpdatePackages
 systemInstallPackages
 systemInstallUser
 systemInstallService
+
 nginxConfigUpdate
 nginxSitesUpdate
+nginxSitesActivate
+
 serviceCreateAppIni
 serviceCreateTreeDir
 serviceCreateEnv

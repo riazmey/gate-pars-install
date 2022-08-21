@@ -30,6 +30,10 @@ function chromeBrowserInstall() {
 
     fi
 
+    if [ -f "/tmp/apt.log" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "/tmp/apt.log"
+    fi
+
     echo "$ROOT_PASS" | sudo -S bash -c "apt-get install -y -f >> /tmp/apt.log"
 
 }

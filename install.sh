@@ -38,9 +38,14 @@ nginxSitesActivate
 
 serviceCreateTreeDir
 serviceCreateAppIni
+
+echo "$ROOT_PASS" | sudo -S chown -R "${USER}:${USER}" "${SERVICE_DIR}"
+
 serviceCreateEnv
 serviceUpdateModules
 serviceInstallChrome
+
+echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR}"
 
 echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
 echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null

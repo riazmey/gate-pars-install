@@ -20,9 +20,8 @@ function chromeBrowserInstall() {
 
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
+        echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
     fi
-
-    echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
 
 }
 
@@ -34,9 +33,13 @@ function chromeDriverInstall() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${serviceDirBin}/${nameDriver}"
     fi
 
-    #packageIsInstalled 
+    installed=$(packageIsInstalled "${namePackageBrowser}")
 
-    chrome_version=$(google-chrome --version | awk '{print $3}')
+    if [ "${installed}" == "${FALSE}" ]; then
+        return 0
+    fi
+
+    chrome_version=$(${namePackageBrowser} --version | awk '{print $3}')
 
     echo "$ROOT_PASS" | sudo -S rm -f "${dirTmpChrome}/${nameDriver}"
     echo "$ROOT_PASS" | sudo -S rm -f "${dirTmpChrome}/${nameDriver}.zip"

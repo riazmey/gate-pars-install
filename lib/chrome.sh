@@ -1,5 +1,9 @@
 #!/bin/bash
 
+####################################### IMPORT FILES ######################################
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/lib/general.sh"
+
 ######################################## VARIABLES ########################################
 namePackageBrowser="google-chrome-stable"
 serviceDirBin="${SERVICE_DIR}/bin"
@@ -20,16 +24,19 @@ function chromeBrowserInstall() {
 
     if [ "${installed}" == "${FALSE}" ]; then
 
-        resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+        echo "$ROOT_PASS" | sudo -S bash -c "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - &> /dev/null"
+        echo "$ROOT_PASS" | sudo -S sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list' &> /dev/null
 
-        if [ "${resultDownLoad}" == "${TRUE}" ]; then
-            echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb"
-        fi
+        echo "$ROOT_PASS" | sudo -S apt-get -y update &> /dev/null
 
-    fi
+        installPackage "${namePackageBrowser}"
 
-    if [ -f "/tmp/apt.log" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "/tmp/apt.log"
+        #resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+        #
+        #if [ "${resultDownLoad}" == "${TRUE}" ]; then
+        #    echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
+        #fi
+
     fi
 
     echo "$ROOT_PASS" | sudo -S apt-get install -y -f

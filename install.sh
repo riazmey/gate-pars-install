@@ -12,6 +12,8 @@ source "${INSTALL_DIR}/lib/general.sh"
 source "${INSTALL_DIR}/lib/system.sh"
 # shellcheck source=/dev/null
 source "${INSTALL_DIR}/lib/nginx.sh"
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/lib/service.sh"
 
 ########################################## MAIN ###########################################
 if [ "${USER}" == "root" ]; then

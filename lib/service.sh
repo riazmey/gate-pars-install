@@ -94,7 +94,7 @@ function serviceUpdateModules() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${dirGitTmp}"
     fi
 
-    echo "$ROOT_PASS" | sudo -S git clone "${SERVICE_GIT_REPO_MODULES}" "${TEMPORARY_DIR}" &> /dev/null
+    git clone "${SERVICE_GIT_REPO_MODULES}" "${TEMPORARY_DIR}" &> /dev/null
     echo "$ROOT_PASS" | sudo -S cp -rf "${dirGitTmp}" "${SERVICE_DIR}"
     
 }

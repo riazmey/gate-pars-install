@@ -46,12 +46,12 @@ function chromeDriverInstall() {
         return 0
     fi
 
-    chrome_version=$(${namePackageBrowser} --version | awk '{print $3}')
+    latestChromeDriverVersion=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
 
     echo "$ROOT_PASS" | sudo -S rm -f "${dirTmpChrome}/${nameDriver}"
     echo "$ROOT_PASS" | sudo -S rm -f "${dirTmpChrome}/${nameDriver}.zip"
 
-    resultDownLoad=$(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" -O "${dirTmpChrome}/${nameDriver}.zip" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+    resultDownLoad=$(wget "https://chromedriver.storage.googleapis.com/${latestChromeDriverVersion}/chromedriver_linux64.zip" -O "${dirTmpChrome}/${nameDriver}.zip" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
 

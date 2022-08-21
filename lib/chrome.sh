@@ -16,13 +16,19 @@ function chromeBrowserInstall() {
         mkdir -p "${dirTmpChrome}"
     fi
 
-    resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+    installed=$(packageIsInstalled "${namePackageBrowser}")
 
-    if [ "${resultDownLoad}" == "${TRUE}" ]; then
-        echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
+    if [ "${installed}" == "${FALSE}" ]; then
+
+        resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+
+        if [ "${resultDownLoad}" == "${TRUE}" ]; then
+            echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
+        fi
+
     fi
 
-    echo "$ROOT_PASS" | sudo -S apt-get install -y --force-yes -f &> /dev/null
+    echo "$ROOT_PASS" | sudo -S apt-get install -y --force-yes -f #&> /dev/null
 
 }
 

@@ -3,6 +3,26 @@
 set -eu
 
 ########################################## MAIN ###########################################
+function serviceCreateTreeDir() {
+
+    echo "serviceCreateTreeDir"
+
+    for currentDir in ${SERVICE_DIR_TREE}; do
+
+        if [ -d "${currentDir}" ]; then
+            echo "$ROOT_PASS" | sudo -S rm -rf "${currentDir}"
+        fi
+
+        echo "$ROOT_PASS" | sudo -S mkdir -p "${currentDir}"
+
+        echo "$ROOT_PASS" | sudo -S mkdir -p "${currentDir}"
+        echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${currentDir}"
+        echo "$ROOT_PASS" | sudo -S chmod -R 644 "${currentDir}"
+
+    done
+
+}
+
 function serviceCreateAppIni() {
 
     echo "serviceCreateAppIni"
@@ -22,26 +42,6 @@ function serviceCreateAppIni() {
     done < "${fileIniTemplate}"
 
     echo "$ROOT_PASS" | sudo -S systemctl daemon-reload &> /dev/null
-
-}
-
-function serviceCreateTreeDir() {
-
-    echo "serviceCreateTreeDir"
-
-    for currentDir in ${SERVICE_DIR_TREE}; do
-
-        if [ -d "${currentDir}" ]; then
-            rm -rf "${currentDir}"
-        fi
-
-        mkdir -p "${currentDir}"
-
-        echo "$ROOT_PASS" | sudo -S mkdir -p "${currentDir}"
-        echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${currentDir}"
-        echo "$ROOT_PASS" | sudo -S chmod -R 644 "${currentDir}"
-
-    done
 
 }
 

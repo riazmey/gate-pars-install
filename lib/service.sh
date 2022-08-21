@@ -70,6 +70,8 @@ function serviceCreateEnv() {
 
     deactivate
 
+    exit
+
 }
 
 function serviceUpdateModules() {

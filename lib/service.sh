@@ -76,5 +76,4 @@ function serviceUpdateModules() {
         git clone "${SERVICE_GIT_REPO}" &> /dev/null
     fi
     
-
 }

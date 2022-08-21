@@ -28,11 +28,6 @@ export SERVICE_DIR_TREE=(
     "${SERVICE_DIR}/opt" )
 
 ###################################### CONFIG NGINX #######################################
-export NGINX_CONF_FILE="/etc/nginx/nginx.conf"
-export NGINX_CONF_DIR_SITES_AVAILABLE="/etc/nginx/sites-available"
-export NGINX_CONF_DIR_SITES_ENABLED="/etc/nginx/sites-enabled"
-export NGINX_CONF_FILE_TMP="/tmp/nginx.conf"
-export NGINX_CONF_FILE_TEMPLATE="/tmp/nginx_template.conf"
 export NGINX_CONF_PARAMS_RETREAT="${symbolTab}"
 export NGINX_CONF_PARAMS_FOR_SET=(
 	"uwsgi_read_timeout 600s"

@@ -7,6 +7,10 @@ function nginxConfigUpdate() {
 
     echo "nginxConfigUpdate"
 
+    local confFile="/etc/nginx/nginx.conf"
+    local confFileTmp="/tmp/nginx.conf"
+    local confFileTemplate="/tmp/nginx_template.conf"
+
     function readConfig() {
 
         echo "  nginxConfigUpdate.readConfig"
@@ -18,7 +22,7 @@ function nginxConfigUpdate() {
 
             if [[ $string == *"http {"* ]]; then
                 currentAreaHttp="${TRUE}"
-                echo "httpAreaInsertionLocation" >> "${NGINX_CONF_FILE_TEMPLATE}"
+                echo "httpAreaInsertionLocation" >> "${confFileTemplate}"
             fi
 
             if [ "${currentAreaHttp}" == "${TRUE}" ]; then
@@ -41,14 +45,14 @@ function nginxConfigUpdate() {
                 fi
 
             else
-                echo "${string}" >> "${NGINX_CONF_FILE_TEMPLATE}"
+                echo "${string}" >> "${confFileTemplate}"
             fi
 
             if [[ "${currentAreaHttp}" == "${TRUE}" && $string == *"}"* ]]; then
                 currentAreaHttp="${FALSE}"
             fi
 
-        done < "${NGINX_CONF_FILE}"
+        done < "${confFile}"
 
     }
 
@@ -110,14 +114,14 @@ function nginxConfigUpdate() {
 
             if [ "${string}" == "httpAreaInsertionLocation" ]; then
 
-                echo "http {" >> "${NGINX_CONF_FILE_TMP}"
+                echo "http {" >> "${confFileTmp}"
 
                 local length=${#parametrsHttp[@]}
                 for (( index=0; $(( index < length )); index++ )); do
-                    echo "${NGINX_CONF_PARAMS_RETREAT}${parametrsHttp[$index]};" >> "${NGINX_CONF_FILE_TMP}"
+                    echo "${NGINX_CONF_PARAMS_RETREAT}${parametrsHttp[$index]};" >> "${confFileTmp}"
                 done
 
-                echo "}" >> "${NGINX_CONF_FILE_TMP}"
+                echo "}" >> "${confFileTmp}"
 
             else
 
@@ -128,9 +132,9 @@ function nginxConfigUpdate() {
 
                 local firstSymbol="${string:0:1}"
                 if [[ "${firstSymbol}" == "#" ]]; then
-                    echo "${string}" >> "${NGINX_CONF_FILE_TMP}"
+                    echo "${string}" >> "${confFileTmp}"
                 else
-                    echo "${retreats}${string}" >> "${NGINX_CONF_FILE_TMP}"
+                    echo "${retreats}${string}" >> "${confFileTmp}"
                 fi
 
             fi
@@ -139,7 +143,7 @@ function nginxConfigUpdate() {
                 level=$(( level+1 ))
             fi
 
-        done < "${NGINX_CONF_FILE_TEMPLATE}"
+        done < "${confFileTemplate}"
 
     }
 
@@ -147,22 +151,23 @@ function nginxConfigUpdate() {
 
         echo "  nginxConfigUpdate.writeConfig"
 
-        local nginxConfigFileOld="${NGINX_CONF_FILE}.old"
+        local nginxConfigFileOld="${confFile}.old"
 
         if [ -f "${nginxConfigFileOld}" ]; then
             echo "$ROOT_PASS" | sudo -S rm -rf "${nginxConfigFileOld}"
         fi
 
-        echo "$ROOT_PASS" | sudo -S cp "${NGINX_CONF_FILE}" "${nginxConfigFileOld}"
-        echo "$ROOT_PASS" | sudo -S bash -c "cat ${NGINX_CONF_FILE_TMP} | tee ${NGINX_CONF_FILE} > /dev/null"
+        echo "$ROOT_PASS" | sudo -S cp "${confFile}" "${nginxConfigFileOld}"
+        echo "$ROOT_PASS" | sudo -S bash -c "cat ${confFileTmp} | tee ${confFile} > /dev/null"
+
     }
 
-    if [ -f "${NGINX_CONF_FILE_TMP}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${NGINX_CONF_FILE_TMP}"
+    if [ -f "${confFileTmp}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${confFileTmp}"
     fi
 
-    if [ -f "${NGINX_CONF_FILE_TEMPLATE}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${NGINX_CONF_FILE_TEMPLATE}"
+    if [ -f "${confFileTemplate}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${confFileTemplate}"
     fi
 
     local parametrsHttp=()
@@ -180,9 +185,12 @@ function nginxSitesUpdate() {
 
     echo "nginxSitesUpdate"
 
-    local fileSiteAvailableService="${NGINX_CONF_DIR_SITES_AVAILABLE}/${SERVICE_NAME}"
-    local fileSiteEnabledService="${NGINX_CONF_DIR_SITES_ENABLED}/${SERVICE_NAME}"
+    local dirSitesAvailable="/etc/nginx/sites-available"
+    local dirSitesEnabled="/etc/nginx/sites-enabled"
+    local fileSiteAvailableService="${dirSitesAvailable}/${SERVICE_NAME}"
+    local fileSiteEnabledService="${dirSitesEnabled}/${SERVICE_NAME}"
     local fileTemplate="${INSTALL_DIR}/etc/nginx-site"
+    local fileTmp="/tmp/${SERVICE_NAME}_sites_available"
 
     if [ -f "${fileSiteAvailableService}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableService}"
@@ -192,40 +200,66 @@ function nginxSitesUpdate() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteEnabledService}"
     fi
 
-    local level=0
-    while read -r string; do
-        
-        local resultString=""
-        local retreats=""
+    if [ -f "${fileTmp}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmp}"
+    fi
 
-        stringWhithParametrs=$(eval echo "$string")
+    function writeConfigTemp() {
 
-        if [[ $string == *"{"* ]]; then
+        echo "  nginxSitesUpdate.writeConfig"
+
+        local level=0
+        while read -r string; do
             
-            for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
-                retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
-            done
+            local resultString=""
+            local retreats=""
 
-            level=$(( level+1 ))
+            stringWhithParametrs=$(eval echo "$string")
 
-        elif [[ $string == *"}"* ]]; then
+            if [[ $string == *"{"* ]]; then
+                
+                for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
+                    retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
+                done
 
-            level=$(( level-1 ))
+                level=$(( level+1 ))
 
-            for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
-                retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
-            done
+            elif [[ $string == *"}"* ]]; then
 
+                level=$(( level-1 ))
+
+                for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
+                    retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
+                done
+
+            fi
+
+            resultString="${retreats}${stringWhithParametrs}"
+            echo "${resultString}" >> "${fileTmp}"
+
+        done < "${fileTemplate}"
+
+    }
+
+    function writeConfig() {
+
+        echo "  nginxSitesUpdate.writeConfig"
+
+        local fileSiteAvailableServiceOld="${fileSiteAvailableService}.old"
+
+        if [ -f "${fileSiteAvailableServiceOld}" ]; then
+            echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableServiceOld}"
         fi
 
-        resultString="${retreats}${stringWhithParametrs}"
-        echo "${resultString}"
+        echo "$ROOT_PASS" | sudo -S cp "${fileSiteAvailableService}" "${fileSiteAvailableServiceOld}"
+        echo "$ROOT_PASS" | sudo -S bash -c "cat ${fileTmp} | tee ${fileSiteAvailableService} > /dev/null"
 
-        echo "$ROOT_PASS" | sudo -S bash -c "echo ${resultString} >> ${fileSiteAvailableService}"
+    }
 
-    done < "${fileTemplate}"
+    writeConfigTemp
+    writeConfig
 
-    echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${NGINX_CONF_DIR_SITES_ENABLED}"
+    echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${dirSitesEnabled}"
 
 }
 

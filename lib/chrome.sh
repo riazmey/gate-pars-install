@@ -4,13 +4,13 @@
 namePackageBrowser="google-chrome-stable"
 serviceDirBin="${SERVICE_DIR}/bin"
 nameDriver="chromedriver"
-DirTmp="/tmp"
+dirTmp="${TEMPORARY_DIR}/chrome"
 
 ########################################### MAIN ##########################################
 
 function chromeBrowserInstall() {
 
-    resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${DirTmp}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+    resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmp}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
     echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${namePackageBrowser}.deb" &> /dev/null
@@ -25,19 +25,19 @@ function chromeDriverInstall() {
 
     chrome_version=$(google-chrome --version | awk '{print $3}')
 
-    echo "$ROOT_PASS" | sudo -S rm -f "${DirTmp}/${nameDriver}"
-    echo "$ROOT_PASS" | sudo -S rm -f "${DirTmp}/${nameDriver}.zip"
+    echo "$ROOT_PASS" | sudo -S rm -f "${dirTmp}/${nameDriver}"
+    echo "$ROOT_PASS" | sudo -S rm -f "${dirTmp}/${nameDriver}.zip"
 
-    resultDownLoad=$(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" -O "${DirTmp}/${nameDriver}.zip" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+    resultDownLoad=$(wget "https://chromedriver.storage.googleapis.com/${chrome_version}/chromedriver_linux64.zip" -O "${dirTmp}/${nameDriver}.zip" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
 
         installPackage "unzip"
-        unzip "${DirTmp}/${nameDriver}.zip" -d "${DirTmp}"
+        unzip "${dirTmp}/${nameDriver}.zip" -d "${dirTmp}"
 
-        if [ -f "${DirTmp}/${nameDriver}" ]; then
+        if [ -f "${dirTmp}/${nameDriver}" ]; then
             echo "$ROOT_PASS" | sudo -S rm -f "${serviceDirBin}/${nameDriver}"
-            echo "$ROOT_PASS" | sudo -S mv "${DirTmp}/${nameDriver}" "${serviceDirBin}/${nameDriver}" 
+            echo "$ROOT_PASS" | sudo -S mv "${dirTmp}/${nameDriver}" "${serviceDirBin}/${nameDriver}" 
         fi
 
     fi

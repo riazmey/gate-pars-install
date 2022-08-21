@@ -29,6 +29,12 @@ if [ "$(requestPasswordSU)" == "${FALSE}" ]; then
     exit 0
 fi
 
+if [ -d "${TEMPORARY_DIR}" ]; then
+    echo "$ROOT_PASS" | sudo -S mkdir -p "${TEMPORARY_DIR}"
+fi
+
+mkdir -p "${TEMPORARY_DIR}"
+
 systemUpdatePackages
 systemInstallPackages
 systemInstallUser
@@ -47,5 +53,6 @@ serviceEnable
 
 chromeBrowserInstall
 chromeDriverInstall
+chromeDriverExcecutable
 
 echo 'Done'

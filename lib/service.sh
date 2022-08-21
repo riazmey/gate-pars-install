@@ -94,7 +94,7 @@ function serviceUpdateModules() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${dirGitTmp}"
     fi
 
-    echo "$ROOT_PASS" | sudo -S git clone "${SERVICE_GIT_REPO_MODULES}" "${dirGitTmp}" &> /dev/null
+    echo "$ROOT_PASS" | sudo -S git clone "${SERVICE_GIT_REPO_MODULES}" "${TEMPORARY_DIR}" &> /dev/null
     echo "$ROOT_PASS" | sudo -S cp -rf "${dirGitTmp}" "${SERVICE_DIR}"
     
 }
@@ -127,8 +127,6 @@ function serviceEnable() {
 
     echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR}"
     echo "$ROOT_PASS" | sudo -S chmod -R 644 "${SERVICE_DIR}"
-
-    chromeDriverExcecutable
 
     if [ -f "${fileApp}" ]; then
         echo "$ROOT_PASS" | sudo -S chmod +x "${fileApp}"

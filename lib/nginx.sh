@@ -280,8 +280,6 @@ function nginxSitesActivate() {
 
 }
 
-if [ -d "${dirTmp}" ]; then
-    echo "$ROOT_PASS" | sudo -S rm -rf "${dirTmp}"
+if [ ! -d "${dirTmp}" ]; then
+    mkdir -p "${dirTmp}"
 fi
-
-mkdir -p "${dirTmp}"

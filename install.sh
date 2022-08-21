@@ -34,7 +34,6 @@ if [ -d "${TEMPORARY_DIR}" ]; then
 fi
 
 mkdir -p "${TEMPORARY_DIR}"
-echo "$ROOT_PASS" | sudo -S chmod -R 644 "${TEMPORARY_DIR}"
 
 systemUpdatePackages
 systemInstallPackages

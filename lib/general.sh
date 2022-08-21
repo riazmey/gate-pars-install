@@ -158,3 +158,40 @@ function nameOS () {
   done
 
 }
+
+# Определяет существует ли сервис в системе
+# Входящие параметры:
+#   отсутствует
+# Возвращаемое значение:
+#   Булево
+function serviceIsExist() {
+
+  result=$(systemctl list-units "$1".service | grep "$1".service && echo "${TRUE}" || echo "${FALSE}")
+  echo "${result}"
+
+}
+
+# Определяет активен ли сервис
+# Входящие параметры:
+#   отсутствует
+# Возвращаемое значение:
+#   Булево
+function serviceIsActive() {
+
+  exist=$(serviceIsExist "$1")
+
+  if [ "${exist}" == "${TRUE}" ]; then
+
+    result=$(systemctl list-units "$1".service | grep "$1".service | awk '{print $3}')
+
+    if [ "${result}" == "active" ]; then
+      echo "${TRUE}"
+    else
+      echo "${FALSE}"
+    fi
+
+  else
+    echo "${FALSE}"
+  fi
+
+}

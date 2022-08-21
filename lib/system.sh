@@ -57,17 +57,11 @@ function systemInstallPackages() {
 function systemInstallService() {
 
     echo "systemInstallService"
-
-    serviceIsExist=$(systemctl list-units "${SERVICE_NAME}".service | grep "${SERVICE_NAME}".service && echo "${TRUE}" || echo "${FALSE}")
-
-    if [ "${serviceIsExist}" == "${TRUE}" ]; then
         
-        serviceStatus=$(systemctl list-units "${SERVICE_NAME}".service | grep "${SERVICE_NAME}".service | awk '{print $3}')
+    serviceActive=$(serviceIsActive "${SERVICE_NAME}")
 
-        if [ "${serviceStatus}" == "active" ]; then
-            echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
-        fi
-
+    if [ "${serviceActive}" == "${TRUE}" ]; then
+        echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
     fi
 
     local fileService="/etc/systemd/system/${SERVICE_NAME}.service"

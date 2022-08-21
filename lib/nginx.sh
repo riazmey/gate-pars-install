@@ -156,6 +156,8 @@ function nginxConfigUpdate() {
     fi
 
     local parametrsHttp=()
+    
+    echo "$ROOT_PASS" | sudo -S systemctl stop nginx
 
     readConfig
     setParametrs
@@ -163,7 +165,6 @@ function nginxConfigUpdate() {
     writeConfig
 
     echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    echo "$ROOT_PASS" | sudo -S systemctl stop nginx
     echo "$ROOT_PASS" | sudo -S systemctl enable nginx
     echo "$ROOT_PASS" | sudo -S systemctl start nginx
 
@@ -183,9 +184,39 @@ function nginxSitesUpdate() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteEnabledService}"
     fi
 
+    local level=0
     while read -r string; do
-        newString=$(eval echo "$string")
-        echo "$ROOT_PASS" | sudo -S bash -c "echo ${newString} >> ${fileSiteAvailableService}"
+        
+        stringWhithParametrs=$(eval echo "$string")
+        local resultString=""
+        local endSymbol=""
+
+        local retreats=""
+
+        if [[ $string == *"{"* ]]; then
+            
+            for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
+                retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
+            done
+
+            level=$(( level+1 ))
+
+        elif [[ $string == *"}"* ]]; then
+
+            level=$(( level-1 ))
+
+            for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
+                retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
+            done
+
+        else
+            endSymbol=";"
+        fi
+
+        resultString="${retreats}${stringWhithParametrs}${endSymbol}"
+
+        echo "$ROOT_PASS" | sudo -S bash -c "echo ${resultString} >> ${fileSiteAvailableService}"
+
     done < "${fileTemplate}"
 
     echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${NGINX_CONF_DIR_SITES_ENABLED}"

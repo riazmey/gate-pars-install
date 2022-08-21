@@ -30,7 +30,6 @@ if [ "$(requestPasswordSU)" == "${FALSE}" ]; then
 fi
 
 if [ -d "${TEMPORARY_DIR}" ]; then
-    echo "rm ${TEMPORARY_DIR}"
     echo "$ROOT_PASS" | sudo -S rm -rf "${TEMPORARY_DIR}"
 fi
 

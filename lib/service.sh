@@ -73,7 +73,7 @@ function serviceCreateEnv() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${dirEnv}"
     fi
 
-    echo "$ROOT_PASS" | sudo -S cp -rf "${dirTmpServiceEnv}" "${SERVICE_DIR}"
+    echo "$ROOT_PASS" | sudo -S cp -af "${dirTmpServiceEnv}" "${SERVICE_DIR}"
 
 }
 

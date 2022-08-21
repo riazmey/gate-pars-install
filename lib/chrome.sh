@@ -20,8 +20,9 @@ function chromeBrowserInstall() {
 
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
         echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
-        echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
     fi
+
+    echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
 
 }
 

@@ -7,19 +7,13 @@ ipAdress=$(echo "${ipAdresses}" | awk '{ print $1}')
 symbolTab=$(echo -e "\t")
 installDir="$(pwd)"
 
-########################################## MAIN ###########################################
-export TRUE="true"
-export FALSE="false"
-export ROOT_PASS=""
-export INSTALL_DIR="${installDir}"
-
 #################################### SERVICE GATE_PARS ####################################
 export SERVICE_IP_ADDRESS="${ipAdress}"
 export SERVICE_NAME="gate_pars"
 export SERVICE_USER="${SERVICE_NAME}"
 export SERVICE_GROUP="www-data"
 export SERVICE_DIR="/srv/${SERVICE_NAME}"
-export SERVICE_GIT_REPO="https://github.com/riazmey/gate-pars-modules.git"
+export SERVICE_GIT_REPO_MODULES="https://github.com/riazmey/gate-pars-modules.git"
 export SERVICE_DIR_TREE=(
     "${SERVICE_DIR}"
     "${SERVICE_DIR}/bin"
@@ -36,3 +30,10 @@ export NGINX_CONF_PARAMS_FOR_SET=(
 	"send_timeout 600s"
 	"client_header_timeout 600s"
 	"client_body_timeout 600s" )
+
+########################################## MAIN ###########################################
+export TRUE="true"
+export FALSE="false"
+export ROOT_PASS=""
+export INSTALL_DIR="${installDir}"
+export TEMPORARY_DIR="/tmp/${SERVICE_NAME}"

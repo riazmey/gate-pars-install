@@ -38,17 +38,14 @@ nginxConfigUpdate
 nginxSitesUpdate
 nginxSitesActivate
 
+serviceStop
 serviceCreateTreeDir
 serviceCreateAppIni
 serviceCreateEnv
 serviceUpdateModules
+serviceEnable
 
 chromeBrowserInstall
 chromeDriverInstall
-
-serviceEnable
-
-echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
-echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null
 
 echo 'Done'

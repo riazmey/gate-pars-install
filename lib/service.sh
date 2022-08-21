@@ -2,6 +2,10 @@
 
 set -eu
 
+####################################### IMPORT FILES ######################################
+# shellcheck source=/dev/null
+source "${INSTALL_DIR}/lib/general.sh"
+
 ########################################## MAIN ###########################################
 function serviceCreateTreeDir() {
 
@@ -45,12 +49,11 @@ function serviceCreateEnv() {
 
     echo "serviceCreateEnv"
 
-    local dirTmpService="/tmp/${SERVICE_NAME}"
-    local dirTmpServiceEnv="${dirTmpService}/env"
+    local dirTmpServiceEnv="${TEMPORARY_DIR}/env"
     local dirEnv="${SERVICE_DIR}/env"
 
-    if [ -d "${dirTmpService}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${dirTmpService}"
+    if [ -d "${dirTmpServiceEnv}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${dirTmpServiceEnv}"
     fi
 
     mkdir -p "${dirTmpServiceEnv}"
@@ -80,13 +83,19 @@ function serviceUpdateModules() {
 
     echo "serviceUpdateModules"
 
-    gitRepoIsEnable=$(git status &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+    dirGit="${SERVICE_DIR}/.git"
+    dirGitTmp="${TEMPORARY_DIR}/.git"
 
-    if [ "${gitRepoIsEnable}" == "${TRUE}" ]; then
-        echo "$ROOT_PASS" | sudo -S git fetch --all && git reset --hard origin/main &> /dev/null
-    else
-        echo "$ROOT_PASS" | sudo -S git clone "${SERVICE_GIT_REPO}" &> /dev/null
+    if [ -d "${dirGit}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${dirGit}"
     fi
+
+    if [ -d "${dirGitTmp}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${dirGitTmp}"
+    fi
+
+    echo "$ROOT_PASS" | sudo -S git clone "${SERVICE_GIT_REPO_MODULES}" "${dirGitTmp}" &> /dev/null
+    echo "$ROOT_PASS" | sudo -S cp -rf "${dirGitTmp}" "${SERVICE_DIR}"
     
 }
 
@@ -98,13 +107,34 @@ function serviceInstallChrome() {
     
 }
 
+function serviceStop() {
+
+    echo "serviceStop"
+
+    serviceActive=$(serviceActive "${SERVICE_NAME}")
+
+    if [ "${serviceActive}" == "${TRUE}" ]; then
+        echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
+    fi
+    
+}
+
 function serviceEnable() {
 
     echo "serviceEnable"
+
+    local fileApp="${SERVICE_DIR}/app.py"
 
     echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR}"
     echo "$ROOT_PASS" | sudo -S chmod -R 644 "${SERVICE_DIR}"
 
     chromeDriverExcecutable
+
+    if [ -f "${fileApp}" ]; then
+        echo "$ROOT_PASS" | sudo -S chmod +x "${fileApp}"
+    fi
+
+    echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
+    echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null
     
 }

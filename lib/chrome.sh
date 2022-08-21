@@ -12,6 +12,10 @@ function chromeBrowserInstall() {
 
     echo "chromeBrowserInstall"
 
+    if [ ! -d "${dirTmpChrome}" ]; then
+        mkdir -p "${dirTmpChrome}"
+    fi
+
     resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
@@ -26,9 +30,11 @@ function chromeDriverInstall() {
 
     echo "chromeDriverInstall"
 
-    if [ ! -d "${serviceDirBin}" ]; then
-        echo "$ROOT_PASS" | sudo -S mkdir -p "${serviceDirBin}"
+    if [ -f "${serviceDirBin}/${nameDriver}" ]; then
+        echo "$ROOT_PASS" | sudo -S rm -rf "${serviceDirBin}/${nameDriver}"
     fi
+
+    #packageIsInstalled 
 
     chrome_version=$(google-chrome --version | awk '{print $3}')
 

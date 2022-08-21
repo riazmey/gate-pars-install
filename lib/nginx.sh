@@ -208,10 +208,10 @@ function nginxSitesUpdate() {
 
             stringWhithParametrs=$(eval echo "$string")
 
-            if [[ $string == *"{"* ]]; then
+            if [[ $stringWhithParametrs == *"{"* ]]; then
                 level=$(( level+1 ))
             fi
-            
+
             for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
                 retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
             done
@@ -219,7 +219,7 @@ function nginxSitesUpdate() {
             resultString="${retreats}${stringWhithParametrs}"
             echo "${resultString}" >> "${fileTmp}"
 
-            if [[ $string == *"}"* ]]; then
+            if [[ $stringWhithParametrs == *"}"* ]]; then
                 level=$(( level-1 ))
             fi
 

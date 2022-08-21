@@ -22,7 +22,7 @@ function chromeBrowserInstall() {
         echo "$ROOT_PASS" | sudo -S dpkg -i --force-depends "${dirTmpChrome}/${namePackageBrowser}.deb" &> /dev/null
     fi
 
-    echo "$ROOT_PASS" | sudo -S apt-get install -f -y &> /dev/null
+    echo "$ROOT_PASS" | sudo -S apt-get install -y --force-yes -f &> /dev/null
 
 }
 

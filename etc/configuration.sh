@@ -19,7 +19,7 @@ export SERVICE_NAME="gate_pars"
 export SERVICE_USER="${SERVICE_NAME}"
 export SERVICE_GROUP="www-data"
 export SERVICE_DIR="/srv/${SERVICE_NAME}"
-export SERVICE_GIT_REPO="https://github.com/riazmey/kubis-gate-pars.git"
+export SERVICE_GIT_REPO="https://github.com/riazmey/gate-pars-modules.git"
 export SERVICE_DIR_TREE=(
     "${SERVICE_DIR}"
     "${SERVICE_DIR}/bin"

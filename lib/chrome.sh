@@ -28,7 +28,7 @@ function chromeBrowserInstall() {
 
     fi
 
-    echo "$ROOT_PASS" | sudo -S apt-get install -y --force-yes -f #&> /dev/null
+    echo "$ROOT_PASS" | sudo -S apt-get install -y --force-yes -f 1> /dev/null
 
 }
 
@@ -56,11 +56,11 @@ function chromeDriverInstall() {
     if [ "${resultDownLoad}" == "${TRUE}" ]; then
 
         installPackage "unzip"
-        unzip "${dirTmpChrome}/${nameDriver}.zip" -d "${dirTmpChrome}"
+        unzip "${dirTmpChrome}/${nameDriver}.zip" -d "${dirTmpChrome}" &> /dev/null
 
         if [ -f "${dirTmpChrome}/${nameDriver}" ]; then
-            echo "$ROOT_PASS" | sudo -S rm -f "${serviceDirBin}/${nameDriver}"
-            echo "$ROOT_PASS" | sudo -S mv "${dirTmpChrome}/${nameDriver}" "${serviceDirBin}/${nameDriver}" 
+            echo "$ROOT_PASS" | sudo -S rm -f "${serviceDirBin}/${nameDriver}" &> /dev/null
+            echo "$ROOT_PASS" | sudo -S mv "${dirTmpChrome}/${nameDriver}" "${serviceDirBin}/${nameDriver}" &> /dev/null
         fi
 
     fi
@@ -74,6 +74,7 @@ function chromeDriverExcecutable() {
     fileChromeDriver="${serviceDirBin}/${nameDriver}"
 
     if [ -f "${fileChromeDriver}" ]; then
+        echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${fileChromeDriver}"
         echo "$ROOT_PASS" | sudo -S chmod u+x "${fileChromeDriver}"
     fi
 

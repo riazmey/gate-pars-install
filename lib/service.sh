@@ -55,7 +55,9 @@ function serviceCreateEnv() {
     fi
 
     mkdir -p "${dirTmpServiceEnv}"
-    python3 -m venv "${dirTmpServiceEnv}"
+    echo "$ROOT_PASS" | sudo -S python3 -m venv "${dirTmpServiceEnv}"
+    echo "$ROOT_PASS" | sudo -S chown -R "${USER}:${USER}" "${dirTmpServiceEnv}"
+
 
     # shellcheck source=/dev/null
     source "${dirTmpServiceEnv}/bin/activate"
@@ -73,7 +75,7 @@ function serviceCreateEnv() {
         echo "$ROOT_PASS" | sudo -S rm -rf "${dirEnv}"
     fi
 
-    echo "$ROOT_PASS" | sudo -S cp -af "${dirTmpServiceEnv}" "${SERVICE_DIR}"
+    echo "$ROOT_PASS" | sudo -S cp -rf "${dirTmpServiceEnv}" "${SERVICE_DIR}"
 
 }
 

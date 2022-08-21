@@ -55,7 +55,7 @@ function chromeDriverExcecutable() {
     fileChromeDriver="${serviceDirBin}/${nameDriver}"
 
     if [ -f "${fileChromeDriver}" ]; then
-        echo "$ROOT_PASS" | sudo -S chmod +x "${fileChromeDriver}"
+        echo "$ROOT_PASS" | sudo -S chmod u+x "${fileChromeDriver}"
     fi
 
 }

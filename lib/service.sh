@@ -128,10 +128,9 @@ function serviceEnable() {
     local fileApp="${SERVICE_DIR}/app.py"
 
     echo "$ROOT_PASS" | sudo -S chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${SERVICE_DIR}"
-    echo "$ROOT_PASS" | sudo -S chmod -R 644 "${SERVICE_DIR}"
 
     if [ -f "${fileApp}" ]; then
-        echo "$ROOT_PASS" | sudo -S chmod +x "${fileApp}"
+        echo "$ROOT_PASS" | sudo -S chmod u+x "${fileApp}"
     fi
 
     echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null

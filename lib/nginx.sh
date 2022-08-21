@@ -192,21 +192,13 @@ function nginxSitesUpdate() {
     local fileTemplate="${INSTALL_DIR}/etc/nginx-site"
     local fileTmp="/tmp/${SERVICE_NAME}_sites_available"
 
-    if [ -f "${fileSiteAvailableService}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableService}"
-    fi
-
-    if [ -f "${fileSiteEnabledService}" ]; then
-        echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteEnabledService}"
-    fi
-
     if [ -f "${fileTmp}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${fileTmp}"
     fi
 
     function writeConfigTemp() {
 
-        echo "  nginxSitesUpdate.writeConfig"
+        echo "  nginxSitesUpdate.writeConfigTemp"
 
         local level=0
         while read -r string; do
@@ -247,19 +239,27 @@ function nginxSitesUpdate() {
 
         local fileSiteAvailableServiceOld="${fileSiteAvailableService}.old"
 
-        if [ -f "${fileSiteAvailableServiceOld}" ]; then
-            echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableServiceOld}"
+        if [ -f "${fileSiteAvailableService}" ]; then
+
+            if [ -f "${fileSiteAvailableServiceOld}" ]; then
+                echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableServiceOld}"
+            fi
+
+            echo "$ROOT_PASS" | sudo -S cp "${fileSiteAvailableService}" "${fileSiteAvailableServiceOld}"
+            echo "$ROOT_PASS" | sudo -S rm -rf "${fileSiteAvailableService}"
+
         fi
 
-        echo "$ROOT_PASS" | sudo -S cp "${fileSiteAvailableService}" "${fileSiteAvailableServiceOld}"
         echo "$ROOT_PASS" | sudo -S bash -c "cat ${fileTmp} | tee ${fileSiteAvailableService} > /dev/null"
+
+        if [ ! -f "${fileSiteEnabledService}" ]; then
+            echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${dirSitesEnabled}"
+        fi
 
     }
 
     writeConfigTemp
     writeConfig
-
-    echo "$ROOT_PASS" | sudo -S sudo ln -s "${fileSiteAvailableService}" "${dirSitesEnabled}"
 
 }
 

@@ -274,9 +274,11 @@ function nginxSitesUpdate() {
 
 function nginxSitesActivate() {
 
-    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload
-    echo "$ROOT_PASS" | sudo -S systemctl enable nginx
-    echo "$ROOT_PASS" | sudo -S systemctl start nginx
+    echo "nginxSitesActivate"
+
+    echo "$ROOT_PASS" | sudo -S systemctl daemon-reload &> /dev/null
+    echo "$ROOT_PASS" | sudo -S systemctl enable nginx &> /dev/null
+    echo "$ROOT_PASS" | sudo -S systemctl start nginx &> /dev/null
 
 }
 

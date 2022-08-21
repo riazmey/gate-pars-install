@@ -209,25 +209,19 @@ function nginxSitesUpdate() {
             stringWhithParametrs=$(eval echo "$string")
 
             if [[ $string == *"{"* ]]; then
-                
-                for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
-                    retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
-                done
-
                 level=$(( level+1 ))
-
-            elif [[ $string == *"}"* ]]; then
-
-                level=$(( level-1 ))
-
-                for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
-                    retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
-                done
-
             fi
+            
+            for (( counterLevel=1; $(( counterLevel <= level )); counterLevel++ )); do
+                retreats="${NGINX_CONF_PARAMS_RETREAT}${retreats}"
+            done
 
             resultString="${retreats}${stringWhithParametrs}"
             echo "${resultString}" >> "${fileTmp}"
+
+            if [[ $string == *"}"* ]]; then
+                level=$(( level-1 ))
+            fi
 
         done < "${fileTemplate}"
 

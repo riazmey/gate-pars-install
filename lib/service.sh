@@ -5,6 +5,8 @@ set -eu
 ########################################## MAIN ###########################################
 function serviceCreateAppIni() {
 
+    echo "serviceCreateAppIni"
+
     local fileIni="${SERVICE_DIR}/app.ini"
     local fileIniTemplate="${INSTALL_DIR}/etc/app.ini"
 
@@ -25,6 +27,8 @@ function serviceCreateAppIni() {
 
 function serviceCreateTreeDir() {
 
+    echo "serviceCreateTreeDir"
+
     for currentDir in ${SERVICE_DIR_TREE}; do
 
         if [ -d "${currentDir}" ]; then
@@ -42,6 +46,8 @@ function serviceCreateTreeDir() {
 }
 
 function serviceCreateEnv() {
+
+    echo "serviceCreateEnv"
 
     cd "${SERVICE_DIR}" || exit
     local dirEnv="${SERVICE_DIR}/env"
@@ -68,6 +74,8 @@ function serviceCreateEnv() {
 
 function serviceUpdateModules() {
 
+    echo "serviceUpdateModules"
+
     gitRepoIsEnable=$(git status &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     if [ "${gitRepoIsEnable}" == "${TRUE}" ]; then
@@ -80,6 +88,8 @@ function serviceUpdateModules() {
 
 function serviceInstallChrome() {
 
-    bash "${INSTALL_DIR}/lib/browser_drivers.sh"
+    echo "serviceInstallChrome"
+
+    bash "${INSTALL_DIR}/lib/install_chrome.sh"
     
 }

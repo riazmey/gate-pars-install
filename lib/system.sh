@@ -9,6 +9,8 @@ source "${INSTALL_DIR}/lib/general.sh"
 ########################################## MAIN ###########################################
 function systemUpdatePackages() {
 
+    echo "systemUpdatePackages"
+
     local question_title="Обновить систему?"
     local question_text="Произвести автоматическое обновление установленных пакетов?"
 
@@ -28,6 +30,8 @@ function systemUpdatePackages() {
 }
 
 function systemInstallPackages() {
+
+    echo "systemInstallPackages"
 
     local modify="${FALSE}"
     local packages="python3-pip python3-dev build-essential libssl-dev \
@@ -51,6 +55,8 @@ function systemInstallPackages() {
 }
 
 function systemInstallService() {
+
+    echo "systemInstallService"
 
     serviceIsExist=$(systemctl list-units "${SERVICE_NAME}".service | grep "${SERVICE_NAME}".service && echo "${TRUE}" || echo "${FALSE}")
 
@@ -83,6 +89,8 @@ function systemInstallService() {
 }
 
 function systemInstallUser() {
+
+    echo "systemInstallUser"
 
     resultFind=$(grep -q "^${SERVICE_USER}:" /etc/passwd && echo "${TRUE}" || echo "${FALSE}")
     dirService=$(dirname "${SERVICE_DIR}")

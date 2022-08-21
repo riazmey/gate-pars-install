@@ -174,8 +174,12 @@ function nginxConfigUpdate() {
     fi
 
     local parametrsHttp=()
+
+    if [ ! -d "${dirTmpNginx}" ]; then
+        mkdir -p "${dirTmpNginx}"
+    fi
     
-    echo "$ROOT_PASS" | sudo -S systemctl stop nginx
+    echo "$ROOT_PASS" | sudo -S systemctl stop nginx &> /dev/null
 
     readConfig
     setParametrs
@@ -267,6 +271,10 @@ function nginxSitesUpdate() {
 
     }
 
+    if [ ! -d "${dirTmpNginx}" ]; then
+        mkdir -p "${dirTmpNginx}"
+    fi
+
     writeConfigTemp
     writeConfig
 
@@ -281,7 +289,3 @@ function nginxSitesActivate() {
     echo "$ROOT_PASS" | sudo -S systemctl start nginx &> /dev/null
 
 }
-
-if [ ! -d "${dirTmpNginx}" ]; then
-    mkdir -p "${dirTmpNginx}"
-fi

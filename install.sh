@@ -25,8 +25,6 @@ if [ "$(requestPasswordSU)" == "${FALSE}" ]; then
     exit 0
 fi
 
-echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
-
 systemUpdatePackages
 systemInstallPackages
 systemInstallUser
@@ -36,6 +34,7 @@ nginxSitesUpdate
 serviceCreateAppIni
 serviceCreateTreeDir
 serviceCreateEnv
+serviceUpdateModules
 
 echo "$ROOT_PASS" | sudo -S systemctl enable "${SERVICE_NAME}" &> /dev/null
 echo "$ROOT_PASS" | sudo -S systemctl start "${SERVICE_NAME}" &> /dev/null

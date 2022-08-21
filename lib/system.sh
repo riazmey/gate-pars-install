@@ -61,7 +61,17 @@ function systemInstallPackages() {
 
 function systemInstallService() {
 
-    #systemctl list-units snapd.service | grep snapd.service | awk '{print $1}'
+    serviceIsExist=$(systemctl list-units "${SERVICE_NAME}".service | grep "${SERVICE_NAME}".service && echo "${TRUE}" || echo "${FALSE}")
+
+    if [ "${serviceIsExist}" == "${TRUE}" ]; then
+        
+        serviceStatus=$(systemctl list-units "${SERVICE_NAME}".service | grep "${SERVICE_NAME}".service | awk '{print $3}')
+
+        if [ "${serviceStatus}" == "active" ]; then
+            echo "$ROOT_PASS" | sudo -S systemctl stop "${SERVICE_NAME}" &> /dev/null
+        fi
+
+    fi
 
     local fileService="/etc/systemd/system/${SERVICE_NAME}.service"
     local fileServiceTemplate="${INSTALL_DIR}/etc/unit.service"

@@ -65,3 +65,16 @@ function serviceCreateEnv() {
     deactivate
 
 }
+
+function serviceUpdateModules() {
+
+    gitRepoIsEnable=$(git status &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
+
+    if [ "${gitRepoIsEnable}" == "${TRUE}" ]; then
+        git fetch --all && git reset --hard origin/main &> /dev/null
+    else
+        git clone "${SERVICE_GIT_REPO}" &> /dev/null
+    fi
+    
+
+}

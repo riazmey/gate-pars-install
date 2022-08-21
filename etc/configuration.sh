@@ -14,12 +14,8 @@ export SERVICE_USER="${SERVICE_NAME}"
 export SERVICE_GROUP="www-data"
 export SERVICE_DIR="/srv/${SERVICE_NAME}"
 export SERVICE_GIT_REPO_MODULES="https://github.com/riazmey/gate-pars-modules.git"
-export SERVICE_DIR_TREE=(
-    "${SERVICE_DIR}"
-    "${SERVICE_DIR}/bin"
-    "${SERVICE_DIR}/run"
-    "${SERVICE_DIR}/data"
-    "${SERVICE_DIR}/opt" )
+export SERVICE_DIR_TREE=("${SERVICE_DIR} ${SERVICE_DIR}/bin ${SERVICE_DIR}/run \
+    ${SERVICE_DIR}/data ${SERVICE_DIR}/opt")
 
 ###################################### CONFIG NGINX #######################################
 export NGINX_CONF_PARAMS_RETREAT="${symbolTab}"

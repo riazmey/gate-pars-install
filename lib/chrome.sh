@@ -10,6 +10,8 @@ dirTmp="${TEMPORARY_DIR}/chrome"
 
 function chromeBrowserInstall() {
 
+    echo "chromeBrowserInstall"
+
     resultDownLoad=$(wget "https://dl.google.com/linux/direct/${namePackageBrowser}_current_amd64.deb" -O "${dirTmp}/${namePackageBrowser}.deb" &> /dev/null && echo "${TRUE}" || echo "${FALSE}")
 
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &> /dev/null
@@ -18,6 +20,8 @@ function chromeBrowserInstall() {
 }
 
 function chromeDriverInstall() {
+
+    echo "chromeDriverInstall"
 
     if [ ! -d "${serviceDirBin}" ]; then
         echo "$ROOT_PASS" | sudo -S mkdir -p "${serviceDirBin}"
@@ -45,6 +49,8 @@ function chromeDriverInstall() {
 }
 
 function chromeDriverExcecutable() {
+
+    echo "chromeDriverExcecutable"
 
     fileChromeDriver="${serviceDirBin}/${nameDriver}"
 

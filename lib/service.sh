@@ -13,11 +13,9 @@ function serviceCreateTreeDir() {
 
     for currentDir in ${SERVICE_DIR_TREE}; do
 
-        if [ -d "${currentDir}" ]; then
-            echo "$ROOT_PASS" | sudo -S rm -rf "${currentDir}"
+        if [ ! -d "${currentDir}" ]; then
+            echo "$ROOT_PASS" | sudo -S mkdir -p "${currentDir}"
         fi
-
-        echo "$ROOT_PASS" | sudo -S mkdir -p "${currentDir}"
 
     done
 

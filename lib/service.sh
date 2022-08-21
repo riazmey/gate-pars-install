@@ -95,7 +95,11 @@ function serviceUpdateModules() {
     fi
 
     git clone "${SERVICE_GIT_REPO_MODULES}" "${dirGitTmp}" &> /dev/null
-    echo "$ROOT_PASS" | sudo -S cp -rf "${dirGitTmp}" "${SERVICE_DIR}"
+
+    dirTree=$(ls "${dirGitTmp}")
+    for moduleFile in ${dirTree}; do
+        echo "$ROOT_PASS" | sudo -S cp -rf "${dirGitTmp}/${moduleFile}" "${SERVICE_DIR}"
+    done
     
 }
 

@@ -35,14 +35,20 @@ fi
 
 mkdir -p "${TEMPORARY_DIR}"
 
+clear
+
 systemUpdatePackages
 systemInstallPackages
 systemInstallUser
 systemInstallService
 
+echo ""
+
 nginxConfigUpdate
 nginxSitesUpdate
 nginxSitesActivate
+
+echo ""
 
 serviceStop
 serviceCreateTreeDir
@@ -51,8 +57,12 @@ serviceCreateEnv
 serviceUpdateModules
 serviceEnable
 
+echo ""
+
 chromeBrowserInstall
 chromeDriverInstall
 chromeDriverExcecutable
+
+echo ""
 
 echo 'Done'

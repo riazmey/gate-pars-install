@@ -39,13 +39,15 @@ function chromeBrowserInstall() {
 
     fi
 
-    echo "$ROOT_PASS" | sudo -S apt-get install -y -f
-
 }
 
 function chromeDriverInstall() {
 
     echo "chromeDriverInstall"
+
+    if [ ! -d "${dirTmpChrome}" ]; then
+        mkdir -p "${dirTmpChrome}"
+    fi
 
     if [ -f "${serviceDirBin}/${nameDriver}" ]; then
         echo "$ROOT_PASS" | sudo -S rm -rf "${serviceDirBin}/${nameDriver}"
@@ -90,7 +92,3 @@ function chromeDriverExcecutable() {
     fi
 
 }
-
-if [ ! -d "${dirTmpChrome}" ]; then
-    mkdir -p "${dirTmpChrome}"
-fi

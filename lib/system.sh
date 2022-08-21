@@ -42,7 +42,7 @@ function systemInstallPackages() {
         installed=$(packageIsInstalled "${name_package}")
 
         if [ "${installed}" == "${FALSE}" ]; then
-            echo "$ROOT_PASS" | sudo -S apt-get -y --force-yes install "$1" &> /dev/null
+            echo "$ROOT_PASS" | sudo -S apt-get -y --force-yes install "${name_package}" &> /dev/null
             modify="${TRUE}"
         fi
 

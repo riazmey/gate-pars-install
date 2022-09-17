@@ -60,7 +60,7 @@ function serviceCreateEnv() {
     # shellcheck source=/dev/null
     source "${dirTmpServiceEnv}/bin/activate"
 
-    packagesPython="wheel requests selenium selenium-wire beautifulsoup4 \
+    packagesPython="wheel openpyxl requests selenium selenium-wire beautifulsoup4 \
         html5lib fake-useragent uwsgi flask"
 
     for namePackage in ${packagesPython}; do
